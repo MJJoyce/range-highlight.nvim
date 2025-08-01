@@ -157,12 +157,15 @@ function M.setup(opts)
 	vim.api.nvim_create_autocmd({ "CmdlineChanged" }, {
 		pattern = "*",
 		callback = debounce(M.opts.debounce.wait, function(ev)
-			local ok = pcall(function()
-				vim.api.nvim_buf_clear_namespace(ev.buf, ns_id, 0, -1)
-			end)
 
-			if not ok then
-				return
+			if vim.api.nvim_buf_is_valid(ev.buf) then
+                local ok = pcall(function()
+                    vim.api.nvim_buf_clear_namespace(ev.buf, ns_id, 0, -1)
+                end)
+
+                if not ok then
+                    return
+                end
 			end
 
 			local cmdline = vim.fn.getcmdline()
